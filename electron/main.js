@@ -93,6 +93,7 @@ function createWindow () {
 		,skipTaskbar: config.get('window_display_behavior') === 'show_trayIcon'
 		,show: !config.get('start_minimized')
 		,acceptFirstMouse: true
+		,titleBarStyle: 'hidden'
 		,webPreferences: {
 			partition: 'persist:rambox',
 			nodeIntegration: true

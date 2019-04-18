@@ -7,3 +7,29 @@
 		margin-top: -10px;
 	}
 }
+
+.x-tab-bar {
+	-webkit-user-select: none;
+	-webkit-app-region: drag;
+}
+
+
+.x-tab-top[style]:first-child {
+	margin-left: 65px;
+}
+
+.x-tab-left:first-child {
+	top: 15px !important;
+}
+
+.x-tab-left[style] {
+	left: 11px !important;
+}
+
+#tabbar-1011-innerCt {
+	min-width: 70px
+}
+
+#tabbar-1011-targetEl {
+	min-width: 70px
+}

@@ -32,7 +32,8 @@ Ext.define('Rambox.view.main.Main', {
 			,baseCls: ''
 			,tooltip: locale['app.main[25]']
 			,href: 'https://www.gofundme.com/rambox-os'
-		}]
+		}],
+		minWidth: 70,
 	}
 	,items: [
 		{
