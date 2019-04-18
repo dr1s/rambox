@@ -11,11 +11,20 @@
 .x-tab-bar {
 	-webkit-user-select: none;
 	-webkit-app-region: drag;
+	background-color: #282C34
+}
+
+.x-tab {
+	background-color: #282C34
 }
 
 
 .x-tab-top[style]:first-child {
 	margin-left: 65px;
+}
+
+.x-tab.x-tab-active.x-tab-default {
+	background-color: #5c6370
 }
 
 .x-tab-left:first-child {
