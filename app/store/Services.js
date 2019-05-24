@@ -20,16 +20,16 @@ Ext.define('Rambox.store.Services', {
 	]
 
 	,listeners: {
-		load: function( store, records, successful ) {
+		load( store, records, successful ) {
 			Ext.cq1('app-main').suspendEvent('add');
 
-			var servicesLeft = [];
-			var servicesRight = [];
+			let servicesLeft = [];
+			let servicesRight = [];
 			store.each(function(service) {
 				// If the service is disabled, we dont add it to tab bar
 				if ( !service.get('enabled') ) return;
 
-				var cfg = {
+				const cfg = {
 					 xtype: 'webview'
 					,id: 'tab_'+service.get('id')
 					,title: service.get('name')

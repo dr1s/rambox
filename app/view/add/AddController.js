@@ -6,19 +6,19 @@ Ext.define('Rambox.view.add.AddController', {
 		'Rambox.util.UnreadCounter'
 	],
 
-	doCancel: function( btn ) {
-		var me = this;
+	doCancel( btn ) {
+		const me = this;
 
 		me.getView().close();
 	}
 
-	,doSave: function( btn ) {
-		var me = this;
+	,doSave( btn ) {
+		const me = this;
 
-		var win = me.getView();
+		const win = me.getView();
 		if ( !win.down('form').isValid() ) return false;
 
-		var formValues = win.down('form').getValues();
+		const formValues = win.down('form').getValues();
 
 		if ( win.edit ) {
 			// Format data
@@ -26,7 +26,7 @@ Ext.define('Rambox.view.add.AddController', {
 				formValues.url = formValues.cycleValue === '1' ? win.service.get('url').replace('___', formValues.url) : formValues.url;
 			}
 
-			var oldData = win.record.getData();
+			const oldData = win.record.getData();
 			win.record.set({
 				 logo: formValues.logo
 				,name: formValues.serviceName
@@ -46,7 +46,7 @@ Ext.define('Rambox.view.add.AddController', {
 				,slowed_timers: formValues.slowed_timers
 			});
 
-			var view = Ext.getCmp('tab_'+win.record.get('id'));
+			const view = Ext.getCmp('tab_'+win.record.get('id'));
 
 			// Change the title of the Tab
 			view.setTitle( formValues.tabname ? formValues.serviceName : '' );
@@ -83,7 +83,7 @@ Ext.define('Rambox.view.add.AddController', {
 				formValues.url = formValues.cycleValue === '1' ? win.record.get('url').replace('___', formValues.url) : formValues.url;
 			}
 
-			var service = Ext.create('Rambox.model.Service', {
+			const service = Ext.create('Rambox.model.Service', {
 				 type: win.record.get('id')
 				,logo: formValues.logo
 				,name: formValues.serviceName
@@ -105,7 +105,7 @@ Ext.define('Rambox.view.add.AddController', {
 			service.save();
 			Ext.getStore('Services').add(service);
 
-			var tabData = {
+			const tabData = {
 				 xtype: 'webview'
 				,id: 'tab_'+service.get('id')
 				/*
@@ -124,7 +124,7 @@ Ext.define('Rambox.view.add.AddController', {
 			};
 
 			if ( formValues.align === 'left' ) {
-				var tbfill = Ext.cq1('app-main').getTabBar().down('tbfill');
+				const tbfill = Ext.cq1('app-main').getTabBar().down('tbfill');
 				Ext.cq1('app-main').insert(Ext.cq1('app-main').getTabBar().items.indexOf(tbfill), tabData).show();
 			} else {
 				Ext.cq1('app-main').add(tabData).show();
@@ -134,14 +134,14 @@ Ext.define('Rambox.view.add.AddController', {
 		win.close();
 	}
 
-	,onEnter: function(field, e) {
-		var me = this;
+	,onEnter(field, e) {
+		const me = this;
 
 		if ( e.getKey() === e.ENTER && field.up('form').isValid() ) me.doSave();
 	}
 
-	,onShow: function(win) {
-		var me = this;
+	,onShow(win) {
+		const me = this;
 
 		// Make focus to the name field
 		win.down('textfield[name="serviceName"]').focus(true, 100);

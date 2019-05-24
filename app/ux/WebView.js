@@ -18,11 +18,11 @@ Ext.define('Rambox.ux.WebView',{
 
 	// CONFIG
 	,hideMode: 'offsets'
-	,initComponent: function(config) {
-		var me = this;
+	,initComponent(config) {
+		const me = this;
 
 		function getLocation(href) {
-			var match = href.match(/^(https?):\/\/([-.\w]*)(\/[^#?]*)(\?[^#]*|)(#.*|)$/);
+			const match = href.match(/^(https?):\/\/([-.\w]*)(\/[^#?]*)(\?[^#]*|)(#.*|)$/);
 			return match && {
 				protocol: match[1],
 				host: match[2],
@@ -48,7 +48,7 @@ Ext.define('Rambox.ux.WebView',{
 			,muted: me.record.get('muted')
 			,tabConfig: {
 				listeners: {
-					afterrender : function( btn ) {
+					afterrender ( btn ) {
 						btn.el.on('contextmenu', function(e) {
 							btn.showMenu('contextmenu');
 							e.stopEvent();
@@ -71,14 +71,14 @@ Ext.define('Rambox.ux.WebView',{
 									,items: [
 										{
 											 text: 'Back'
-											,glyph: 'xf053@FontAwesome'
+											,glyph: 'XF053@FontAwesome'
 											,flex: 1
 											,scope: me
 											,handler: me.goBack
 										}
 										,{
 											 text: 'Forward'
-											,glyph: 'xf054@FontAwesome'
+											,glyph: 'XF054@FontAwesome'
 											,iconAlign: 'right'
 											,flex: 1
 											,scope: me
@@ -91,33 +91,33 @@ Ext.define('Rambox.ux.WebView',{
 						,'-'
 						,{
 							 text: 'Zoom In'
-							,glyph: 'xf00e@FontAwesome'
+							,glyph: 'XF00E@FontAwesome'
 							,scope: me
 							,handler: me.zoomIn
 						}
 						,{
 							 text: 'Zoom Out'
-							,glyph: 'xf010@FontAwesome'
+							,glyph: 'XF010@FontAwesome'
 							,scope: me
 							,handler: me.zoomOut
 						}
 						,{
 							 text: 'Reset Zoom'
-							,glyph: 'xf002@FontAwesome'
+							,glyph: 'XF002@FontAwesome'
 							,scope: me
 							,handler: me.resetZoom
 						}
 						,'-'
 						,{
 							 text: locale['app.webview[0]']
-							,glyph: 'xf021@FontAwesome'
+							,glyph: 'XF021@FontAwesome'
 							,scope: me
 							,handler: me.reloadService
 						}
 						,'-'
 						,{
 							 text: locale['app.webview[3]']
-							,glyph: 'xf121@FontAwesome'
+							,glyph: 'XF121@FontAwesome'
 							,scope: me
 							,handler: me.toggleDevTools
 						}
@@ -135,16 +135,16 @@ Ext.define('Rambox.ux.WebView',{
 		me.callParent(config);
 	}
 
-	,onBeforeDestroy: function() {
-		var me = this;
+	,onBeforeDestroy() {
+		const me = this;
 
 		me.setUnreadCount(0);
 	}
 
-	,webViewConstructor: function( enabled ) {
-		var me = this;
+	,webViewConstructor( enabled ) {
+		const me = this;
 
-		var cfg;
+		let cfg;
 		enabled = enabled || me.record.get('enabled');
 
 		if ( !enabled ) {
@@ -180,8 +180,8 @@ Ext.define('Rambox.ux.WebView',{
 		return cfg;
 	}
 
-	,statusBarConstructor: function(floating) {
-		var me = this;
+	,statusBarConstructor(floating) {
+		const me = this;
 
 		return {
 			 xtype: 'statusbar'
@@ -200,7 +200,7 @@ Ext.define('Rambox.ux.WebView',{
 				}
 				,{
 					 xtype: 'button'
-					,glyph: 'xf00d@FontAwesome'
+					,glyph: 'XF00D@FontAwesome'
 					,scale: 'small'
 					,ui: 'decline'
 					,padding: 0
@@ -216,12 +216,12 @@ Ext.define('Rambox.ux.WebView',{
 		};
 	}
 
-	,onAfterRender: function() {
-		var me = this;
+	,onAfterRender() {
+		const me = this;
 
 		if ( !me.record.get('enabled') ) return;
 
-		var webview = me.getWebView();
+		const webview = me.getWebView();
 
 		// Notifications in Webview
 		me.setNotifications(localStorage.getItem('locked') || JSON.parse(localStorage.getItem('dontDisturb')) ? false : me.record.get('notifications'));
@@ -349,10 +349,10 @@ Ext.define('Rambox.ux.WebView',{
 								}
 							}
 							,listeners: {
-								show: function(win) {
+								show(win) {
 									const webview = win.down('#webview').el.dom;
 									webview.addEventListener('ipc-message', function(event) {
-										var channel = event.channel;
+										const channel = event.channel;
 										switch (channel) {
 											case 'close':
 												win.close();
@@ -413,8 +413,8 @@ Ext.define('Rambox.ux.WebView',{
 			// Mute Webview
 			if ( me.record.get('muted') || localStorage.getItem('locked') || JSON.parse(localStorage.getItem('dontDisturb')) ) me.setAudioMuted(true, true);
 
-			var js_inject = '';
-			var css_inject = '';
+			let js_inject = '';
+			let css_inject = '';
 			// Injected code to detect new messages
 			if ( me.record ) {
 				let js_unread = me.record.get('js_unread');
@@ -453,9 +453,12 @@ Ext.define('Rambox.ux.WebView',{
 				let passive_event_listeners = Ext.getStore('ServicesList').getById(me.record.get('type')).get('passive_event_listeners');
 				if (passive_event_listeners && me.record.get('passive_event_listeners'))
 				{
-					// 3rdparty: This uses npm 'default-passive-events' 1.0.10 inline. Link to license:
-					// https://github.com/zzarcon/default-passive-events/blob/master/LICENSE
-					const passive_event_listeners_code = `const eventListenerOptionsSupported=()=>{let supported=!1;try{const opts=Object.defineProperty({},"passive",{get(){supported=!0}});window.addEventListener("test",null,opts),window.removeEventListener("test",null,opts)}catch(e){}return supported},defaultOptions={passive:!0,capture:!1},supportedPassiveTypes=["scroll","wheel","touchstart","touchmove","touchenter","touchend","touchleave","mouseout","mouseleave","mouseup","mousedown","mousemove","mouseenter","mousewheel","mouseover"],getDefaultPassiveOption=(passive,eventName)=>void 0!==passive?passive:-1!==supportedPassiveTypes.indexOf(eventName)&&defaultOptions.passive,getWritableOptions=options=>{const passiveDescriptor=Object.getOwnPropertyDescriptor(options,"passive");return passiveDescriptor&&!0!==passiveDescriptor.writable&&void 0===passiveDescriptor.set?Object.assign({},options):options},overwriteAddEvent=superMethod=>{EventTarget.prototype.addEventListener=function(type,listener,options){const usesListenerOptions="object"==typeof options&&null!==options,useCapture=usesListenerOptions?options.capture:options;(options=usesListenerOptions?getWritableOptions(options):{}).passive=getDefaultPassiveOption(options.passive,type),options.capture=void 0===useCapture?defaultOptions.capture:useCapture,superMethod.call(this,type,listener,options)},EventTarget.prototype.addEventListener._original=superMethod},supportsPassive=eventListenerOptionsSupported();if(supportsPassive){const addEvent=EventTarget.prototype.addEventListener;overwriteAddEvent(addEvent)}`;
+					/* 3rdparty: This uses npm 'default-passive-events' 1.0.10 inline. Link to license:
+					* https://github.com/zzarcon/default-passive-events/blob/master/LICENSE
+					* Modified to remove unnecessary event hooks.
+					* This should match behavior of Chrome >= 57.
+					*/
+					const passive_event_listeners_code = `const eventListenerOptionsSupported=()=>{let supported=!1;try{const opts=Object.defineProperty({},"passive",{get(){supported=!0}});window.addEventListener("test",null,opts),window.removeEventListener("test",null,opts)}catch(e){}return supported},defaultOptions={passive:!0,capture:!1},supportedPassiveTypes=["scroll","wheel","touchstart","touchmove","mousewheel"],getDefaultPassiveOption=(passive,eventName)=>void 0!==passive?passive:-1!==supportedPassiveTypes.indexOf(eventName)&&defaultOptions.passive,getWritableOptions=options=>{const passiveDescriptor=Object.getOwnPropertyDescriptor(options,"passive");return passiveDescriptor&&!0!==passiveDescriptor.writable&&void 0===passiveDescriptor.set?Object.assign({},options):options},overwriteAddEvent=superMethod=>{EventTarget.prototype.addEventListener=function(type,listener,options){const usesListenerOptions="object"==typeof options&&null!==options,useCapture=usesListenerOptions?options.capture:options;options=usesListenerOptions?getWritableOptions(options):{},options.passive=getDefaultPassiveOption(options.passive,type),options.capture=void 0===useCapture?defaultOptions.capture:useCapture,superMethod.call(this,type,listener,options)},EventTarget.prototype.addEventListener._original=superMethod},supportsPassive=eventListenerOptionsSupported();if(supportsPassive){const addEvent=EventTarget.prototype.addEventListener;overwriteAddEvent(addEvent)}`;
 					js_inject += '{' + passive_event_listeners_code + '}';
 				}
 
@@ -470,7 +473,7 @@ Ext.define('Rambox.ux.WebView',{
 
 			// Prevent Title blinking (some services have) and only allow when the title have an unread regex match: "(3) Title"
 			if ( Ext.getStore('ServicesList').getById(me.record.get('type')).get('titleBlink') ) {
-				var js_preventBlink = 'var originalTitle=document.title;Object.defineProperty(document,"title",{configurable:!0,set:function(a){null===a.match(new RegExp("[(]([0-9•]+)[)][ ](.*)","g"))&&a!==originalTitle||(document.getElementsByTagName("title")[0].innerHTML=a)},get:function(){return document.getElementsByTagName("title")[0].innerHTML}});';
+				const js_preventBlink = `const originalTitle=document.title;Object.defineProperty(document,"title",{configurable:!0,set(a){null===a.match(new RegExp("[(]([0-9•]+)[)][ ](.*)","g"))&&a!==originalTitle||(document.getElementsByTagName("title")[0].innerHTML=a)},get:()=>document.getElementsByTagName("title")[0].innerHTML});`;
 				js_inject += js_preventBlink;
 			}
 
@@ -508,7 +511,7 @@ Ext.define('Rambox.ux.WebView',{
 		});
 
 		webview.addEventListener('ipc-message', function(event) {
-			var channel = event.channel;
+			const channel = event.channel;
 			switch (channel) {
 				case 'rambox.setUnreadCount':
 					handleSetUnreadCount(event);
@@ -551,7 +554,9 @@ Ext.define('Rambox.ux.WebView',{
 			}
 
 			function showWindowAndActivateTab(event) {
-				require('electron').remote.getCurrentWindow().show();
+				const currentWindow = require('electron').remote.getCurrentWindow();
+				currentWindow.show();
+				currentWindow.focus();
 				const tabPanel = Ext.cq1('app-main');
 				tabPanel.getActiveTab().blur();
 				tabPanel.setActiveTab(me);
@@ -579,7 +584,7 @@ Ext.define('Rambox.ux.WebView',{
 		if (Ext.getStore('ServicesList').getById(me.record.get('type')).get('js_unread') === '' &&
 			 me.record.get('js_unread') === '') {
 			webview.addEventListener("page-title-updated", function(e) {
-				var count = e.title.match(/\(([^)]+)\)/); // Get text between (...)
+				let count = e.title.match(/\(([^)]+)\)/); // Get text between (...)
 				count = count ? count[1] : '0';
 				count = count === '•' ? count : Ext.isArray(count.match(/\d+/g)) ? count.match(/\d+/g).join("") : count.match(/\d+/g); // Some services have special characters. Example: (•)
 				count = count === null ? '0' : count;
@@ -597,8 +602,8 @@ Ext.define('Rambox.ux.WebView',{
 		});
 	}
 
-	,setUnreadCount: function(newUnreadCount) {
-		var me = this;
+	,setUnreadCount(newUnreadCount) {
+		const me = this;
 
 		if ( !isNaN(newUnreadCount) && (function(x) { return (x | 0) === x; })(parseFloat(newUnreadCount)) && me.record.get('includeInGlobalUnreadCounter') === true) {
 			Rambox.util.UnreadCounter.setUnreadCountForService(me.record.get('id'), newUnreadCount);
@@ -611,7 +616,7 @@ Ext.define('Rambox.ux.WebView',{
 		me.doManualNotification(parseInt(newUnreadCount));
 	}
 
-	,refreshUnreadCount: function() {
+	,refreshUnreadCount() {
 		this.setUnreadCount(this.currentUnreadCount);
 	}
 
@@ -624,8 +629,8 @@ Ext.define('Rambox.ux.WebView',{
 	 *
 	 * @param {int} count
 	 */
-	,doManualNotification: function(count) {
-		var me = this;
+	,doManualNotification(count) {
+		const me = this;
 
 		if (Ext.getStore('ServicesList').getById(me.type).get('manual_notifications') &&
 			me.currentUnreadCount < count &&
@@ -642,8 +647,8 @@ Ext.define('Rambox.ux.WebView',{
 	 *
 	 * @param {string} badgeText
 	 */
-	,setTabBadgeText: function(badgeText) {
-		var me = this;
+	,setTabBadgeText(badgeText) {
+		const me = this;
 		if (me.record.get('displayTabUnreadCounter') === true) {
 			me.tab.setBadgeText(badgeText);
 		} else {
@@ -656,15 +661,15 @@ Ext.define('Rambox.ux.WebView',{
 	 * • clears the badge text
 	 * • clears the global unread counter
 	 */
-	,clearUnreadCounter: function() {
-		var me = this;
+	,clearUnreadCounter() {
+		const me = this;
 		me.tab.setBadgeText('');
 		Rambox.util.UnreadCounter.clearUnreadCountForService(me.record.get('id'));
 	}
 
-	,reloadService: function(btn) {
-		var me = this;
-		var webview = me.getWebView();
+	,reloadService(btn) {
+		const me = this;
+		const webview = me.getWebView();
 
 		if ( me.record.get('enabled') ) {
 			me.clearUnreadCounter();
@@ -672,9 +677,9 @@ Ext.define('Rambox.ux.WebView',{
 		}
 	}
 
-	,toggleDevTools: function(btn) {
-		var me = this;
-		var webview = me.getWebView();
+	,toggleDevTools(btn) {
+		const me = this;
+		const webview = me.getWebView();
 
 		if ( me.record.get('enabled')) {
 			if (webview.isDevToolsOpened()) {
@@ -685,18 +690,18 @@ Ext.define('Rambox.ux.WebView',{
 		}
 	}
 
-	,setURL: function(url) {
-		var me = this;
-		var webview = me.getWebView();
+	,setURL(url) {
+		const me = this;
+		const webview = me.getWebView();
 
 		me.src = url;
 
 		if ( me.record.get('enabled') ) webview.loadURL(url);
 	}
 
-	,setAudioMuted: function(muted, calledFromDisturb) {
-		var me = this;
-		var webview = me.getWebView();
+	,setAudioMuted(muted, calledFromDisturb) {
+		const me = this;
+		const webview = me.getWebView();
 
 		me.muted = muted;
 
@@ -705,16 +710,16 @@ Ext.define('Rambox.ux.WebView',{
 		if ( me.record.get('enabled') ) webview.setAudioMuted(muted);
 	}
 
-	,closeStatusBar: function() {
-		var me = this;
+	,closeStatusBar() {
+		const me = this;
 
 		me.down('statusbar').hide();
 		me.down('statusbar').closed = true;
 		me.down('statusbar').keep = false;
 	}
 
-	,setStatusBar: function(keep) {
-		var me = this;
+	,setStatusBar(keep) {
+		const me = this;
 
 		me.removeDocked(me.down('statusbar'), true);
 
@@ -726,9 +731,9 @@ Ext.define('Rambox.ux.WebView',{
 		me.down('statusbar').keep = keep;
 	}
 
-	,setNotifications: function(notification, calledFromDisturb) {
-		var me = this;
-		var webview = me.getWebView();
+	,setNotifications(notification, calledFromDisturb) {
+		const me = this;
+		const webview = me.getWebView();
 
 		me.notifications = notification;
 
@@ -737,8 +742,8 @@ Ext.define('Rambox.ux.WebView',{
 		if ( me.record.get('enabled') ) ipc.send('setServiceNotifications', webview.partition, notification);
 	}
 
-	,setEnabled: function(enabled) {
-		var me = this;
+	,setEnabled(enabled) {
+		const me = this;
 
 		me.clearUnreadCounter();
 
@@ -755,26 +760,26 @@ Ext.define('Rambox.ux.WebView',{
 		}
 	}
 
-	,goBack: function() {
-		var me = this;
-		var webview = me.getWebView();
+	,goBack() {
+		const me = this;
+		const webview = me.getWebView();
 
 		if ( me.record.get('enabled') ) webview.goBack();
 	}
 
-	,goForward: function() {
-		var me = this;
-		var webview = me.getWebView();
+	,goForward() {
+		const me = this;
+		const webview = me.getWebView();
 
 		if ( me.record.get('enabled') ) webview.goForward();
 	}
-	,setZoomLevel: function(level)
+	,setZoomLevel(level)
 	{
 		this.getWebContents().setZoomLevel(level);
 	}
 
-	,zoomIn: function() {
-		var me = this;
+	,zoomIn() {
+		const me = this;
 
 		me.zoomLevel = me.zoomLevel + 1;
 		if ( me.record.get('enabled') ) {
@@ -783,8 +788,8 @@ Ext.define('Rambox.ux.WebView',{
 		}
 	}
 
-	,zoomOut: function() {
-		var me = this;
+	,zoomOut() {
+		const me = this;
 
 		me.zoomLevel = me.zoomLevel - 1;
 		if ( me.record.get('enabled') ) {
@@ -793,8 +798,8 @@ Ext.define('Rambox.ux.WebView',{
 		}
 	}
 
-	,resetZoom: function() {
-		var me = this;
+	,resetZoom() {
+		const me = this;
 
 		me.zoomLevel = 0;
 		if ( me.record.get('enabled') ) {
@@ -803,21 +808,21 @@ Ext.define('Rambox.ux.WebView',{
 		}
 	}
 
-	,getWebView: function() {
+	,getWebView() {
 		if ( this.record.get('enabled') ) {
 			return this.down('component').el.dom;
 		} else {
 			return false;
 		}
 	}
-	,getWebContents: function() {
+	,getWebContents() {
 		if ( this.record.get('enabled') ) {
 			return this.getWebView().getWebContents();
 		} else {
 			return false;
 		}
 	}
-	,getUserAgent: function() {
+	,getUserAgent() {
 		const me = this;
 		// TODO: Keep just in case we need our own User Agent builder.
 		// const default_ua = `Mozilla/5.0` +
@@ -831,17 +836,18 @@ Ext.define('Rambox.ux.WebView',{
 		const ua = service_ua ? service_ua : default_ua;
 		return ua;
 	}
-	,getOSArch: function() {
+	,getOSArch() {
 		const me = this;
-		let platform = require('os').platform();
-		let arch = require('os').arch();
+		const {remote} = require('electron');
+		const platform = remote.require('os').platform();
+		let arch = remote.require('os').arch();
 
 		switch (platform) {
 			case 'win32':
 				arch = me.is32bit() ? 'WOW64' : 'Win64; x64';
 				break;
 			case 'freebsd':
-				arch = me.is32bit ? 'i386' : 'amd64';
+				arch = me.is32bit() ? 'i386' : 'amd64';
 				break;
 			case 'sunos':
 				arch = me.is32bit() ? 'i86pc' : 'x86_64';
@@ -853,8 +859,8 @@ Ext.define('Rambox.ux.WebView',{
 		}
 		return arch;
 	}
-	,getOSArchType: function() {
-		let arch = require('os').arch();
+	,getOSArchType() {
+		let arch = require('electron').remote.require('os').arch();
 
 		switch(arch) {
 			case 'x64':
@@ -884,9 +890,9 @@ Ext.define('Rambox.ux.WebView',{
 		}
 		return arch;
 	}
-	,getOSPlatform: function() {
+	,getOSPlatform() {
 		const me = this;
-		let platform = require('os').platform();
+		let platform = require('electron').remote.require('os').platform();
 		switch (platform) {
 			case 'win32':
 				platform = `Windows NT ${me.getOSRelease()}; ${me.getOSArch()}`;
@@ -908,35 +914,36 @@ Ext.define('Rambox.ux.WebView',{
 		}
 		return platform;
 	}
-	,isWindows: function() {
-		return require('os').platform() === 'win32';
+	,isWindows() {
+		return require('electron').remote.require('os').platform() === 'win32';
 	}
-	,is32bit: function() {
-		const arch = require('os').arch();
+	,is32bit() {
+		const arch = require('electron').remote.require('os').arch();
 		if (arch === 'ia32' || arch === 'x32')
 			return true;
 		else
 			return false;
 	}
-	,getOSRelease: function() {
+	,getOSRelease() {
 		const me = this;
+		const remote = require('electron');
 		return me.isWindows() ?
-		require('os').release().match(/([0-9]+\.[0-9]+)/)[0]
-			: require('os').release();
+		remote.require('os').release().match(/([0-9]+\.[0-9]+)/)[0]
+			: remote.require('os').release();
 	}
-	,getChromeVersion: function() {
-		return require('process').versions['chrome'];
+	,getChromeVersion() {
+		return require('electron').remote.require('process').versions['chrome'];
 	}
-	,getElectronVersion: function() {
+	,getElectronVersion() {
 		return require('process').versions['electron'];
 	}
-	,getAppVersion: function() {
+	,getAppVersion() {
 		return require('electron').remote.app.getVersion();
 	}
-	,blur: function() {
+	,blur() {
 		this.getWebView().blur();
 	}
-	,focus: function()
+	,focus()
 	{
 		this.getWebView().focus();
 	}

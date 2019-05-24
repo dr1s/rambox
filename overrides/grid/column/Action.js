@@ -2,13 +2,13 @@ Ext.define('Rambox.overrides.grid.column.Action', {
     override: 'Ext.grid.column.Action',
 
     // overridden to implement
-    defaultRenderer: function(v, cellValues, record, rowIdx, colIdx, store, view) {
-        var me = this,
+    defaultRenderer(v, cellValues, record, rowIdx, colIdx, store, view) {
+        const me = this,
             prefix = Ext.baseCSSPrefix,
             scope = me.origScope || me,
             items = me.items,
-            len = items.length,
-            i = 0,
+            len = items.length;
+            let i = 0,
             item, ret, disabled, tooltip,glyph, glyphParts, glyphFontFamily;
 
         // Allow a configured renderer to create initial value (And set the other values in the "metadata" argument!)

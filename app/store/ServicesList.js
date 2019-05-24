@@ -180,7 +180,7 @@ Ext.define('Rambox.store.ServicesList', {
 			,url: 'https://discordapp.com/login'
 			,type: 'messaging'
 			,titleBlink: true
-			,js_unread: `let getAlertCount=badges=>{let alerts=0;for(const badge of badges)if(badge&&badge.childNodes&&badge.childNodes.length>0){const count=parseInt(badge.childNodes[0].nodeValue,10);alerts+=count.isNaN?1:count}else alerts++;return alerts},checkUnread=()=>{let direct=0,indirect=document.getElementsByClassName("container-2td-dC unread-2OHH1w").length;const guildDirect=document.getElementsByClassName("wrapper-232cHJ badge-3dItlm"),directMessages=document.getElementsByClassName("wrapper-232cHJ badge-2_fwUZ");direct+=getAlertCount(guildDirect),direct+=getAlertCount(directMessages),indirect+=document.getElementsByClassName("unread-1Dp-OI").length,rambox.updateBadge(direct,indirect)};setInterval(checkUnread,3e3);`
+			,js_unread: `let getMentionCount=badges=>{let alerts=0;for(const badge of badges){const count=parseInt(badge.innerText,10);alerts+=count.isNaN?1:count}return alerts},getServerUnread=badges=>{let alerts=0;for(const badge of badges)alerts+="0.7"===badge.style.opacity?1:0;return alerts},checkUnread=()=>{const mentions=document.querySelectorAll(".lowerBadge-29hYVK > .numberBadge-2s8kKX");unread=document.getElementsByClassName("item-2hkk8m");const direct=getMentionCount(mentions);let indirect=getServerUnread(unread);indirect+=document.getElementsByClassName("unread-3zKkbm").length,rambox.updateBadge(direct,indirect)};setInterval(checkUnread,3e3);`
 			,note: 'To enable desktop notifications, you have to go to Options inside Discord.'
 		},
 		{
@@ -317,7 +317,7 @@ Ext.define('Rambox.store.ServicesList', {
 			,description: locale['services[32]']
 			,url: '___'
 			,type: 'messaging'
-			,custom_js: `Object.defineProperty(document,"title",{configurable:!0,set:function(a){document.getElementsByTagName("title")[0].innerHTML="*"===a[0]?"(•) Mattermost":a},get:function(){return document.getElementsByTagName("title")[0].innerHTML}});`
+			,custom_js: `Object.defineProperty(document,"title",{configurable:!0,set(a){document.getElementsByTagName("title")[0].innerHTML="*"===a[0]?"(•) Mattermost":a},get:()=>document.getElementsByTagName("title")[0].innerHTML});`
 		},
 		{
 			 id: 'dingtalk'
@@ -627,7 +627,7 @@ Ext.define('Rambox.store.ServicesList', {
 			,description: 'Flock is a free enterprise tool for business communication. Packed with tons of productivity features, Flock drives efficiency and boosts speed of execution.'
 			,url: 'https://web.flock.co/'
 			,type: 'messaging'
-			,js_unread: `let checkUnread=()=>{var a=document.getElementsByClassName("unreadMessages no-unread-mentions has-unread");let b=0;for(let i of a)b+=parseInt(i.innerHTML.trim());rambox.updateBadge(b)};setInterval(checkUnread,3e3);`
+			,js_unread: `let checkUnread=()=>{const a=document.getElementsByClassName("unreadMessages no-unread-mentions has-unread");let b=0;for(const i of a)b+=parseInt(i.innerHTML.trim());rambox.updateBadge(b)};setInterval(checkUnread,3e3);`
 
 		},
 		{

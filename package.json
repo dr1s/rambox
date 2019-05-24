@@ -1,12 +1,12 @@
 {
 	"private": true,
 	"scripts": {
-		"start": "npm run compile && electron-builder install-app-deps && electron build/production/Rambox",
+		"start": "npm run compile && electron build/production/Rambox",
 		"debug": "electron --inspect build/production/Rambox",
 		"test": "mocha test/tests/**/*.spec.js",
 		"buildversion": "git show --pretty=\"%h %d %cD\" -s > build/production/Rambox/BUILDVERSION || node -p -e \"require('./build/production/Rambox/package.json').version\" > build/production/Rambox/BUILDVERSION",
 		"clean": "shx rm -rf ./build/production",
-		"compile": "sencha app build && shx cp app/package.json app/package-lock.json build/production/Rambox/ && npm run buildversion",
+		"compile": "sencha app build && shx cp app/package.json app/package-lock.json build/production/Rambox/ && npm run buildversion && electron-builder install-app-deps",
 		"recompile": "npm run distclean && npm run compile",
 		"distclean": "shx rm -rf ./dist",
 		"distclean:win": "shx rm -rf ./dist/win-{ia32-,}unpacked",
@@ -102,13 +102,13 @@
 		}
 	},
 	"devDependencies": {
-		"asar": "^1.0.0",
+		"asar": "^2.0.1",
 		"chai": "^4.2.0",
 		"crowdin": "^1.0.0",
 		"csvjson": "^5.1.0",
-		"electron": "^4.1.4",
+		"electron": "^5.0.1",
 		"electron-builder": "^20.40.2",
-		"mocha": "^6.1.3",
+		"mocha": "^6.1.4",
 		"shx": "^0.3.2",
 		"spectron": "^5.0.0"
 	}

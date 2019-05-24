@@ -1,16 +1,17 @@
-const remote = require('electron').remote;
-const dialog = remote.dialog;
-const app = remote.app;
-const fs = require('fs');
-const path = require('path');
-const userPath = app.getPath('userData');
-const defaultFileName = 'rambox-backup.json';
-const myDefaultPath = userPath + path.sep + defaultFileName;
-
 Ext.define('Rambox.ux.FileBackup', {
 	singleton: true,
-	backupConfiguration: function (callback) {
-		var me = this;
+	constructor() {
+		const me = this;
+		me.callParent(arguments);
+		me.remote = require('electron').remote;
+		me.path = me.remote.require('path');
+		me.fs = me.remote.require('fs');
+		me.userPath = me.remote.app.getPath('userData');
+		me.defaultFileName = 'rambox-backup.json';
+		me.myDefaultPath = me.userPath + me.path.sep + me.defaultFileName;
+	},
+	backupConfiguration(callback) {
+		const me = this;
 		let services = [];
 		Ext.getStore('Services').each(function(service) {
 			const s = Ext.clone(service);
@@ -20,11 +21,11 @@ Ext.define('Rambox.ux.FileBackup', {
 		});
 
 		const json_string = JSON.stringify(services, null, 4);
-		dialog.showSaveDialog({
-			defaultPath: myDefaultPath
+		me.remote.dialog.showSaveDialog({
+			defaultPath: me.myDefaultPath
 		}, function(filename, bookmark) {
 			if (!filename) return;
-			fs.writeFile(filename, json_string, function(err) {
+			me.fs.writeFile(filename, json_string, function(err) {
 				if (err) {
 					console.log(err);
 				}
@@ -32,15 +33,15 @@ Ext.define('Rambox.ux.FileBackup', {
 		});
 		if (Ext.isFunction(callback)) callback.bind(me)();
 	},
-	restoreConfiguration: function () {
-		var me = this;
-		dialog.showOpenDialog({
-			defaultPath: myDefaultPath,
+	restoreConfiguration() {
+		const me = this;
+		me.remote.dialog.showOpenDialog({
+			defaultPath: me.myDefaultPath,
 			properties: ['openFile']
 		}, function(filePaths, bookmarks) {
 			if (filePaths && filePaths.length === 1) {
 				const filePath = filePaths[0];
-				fs.readFile(filePath, function (err, data) {
+				me.fs.readFile(filePath, function (err, data) {
 					if (err) {
 						console.log(err);
 					}
@@ -52,7 +53,7 @@ Ext.define('Rambox.ux.FileBackup', {
 								service.save();
 								Ext.getStore('Services').add(service);
 							});
-							remote.getCurrentWindow().reload();
+							me.remote.getCurrentWindow().reload();
 						});
 
 					}

@@ -3,7 +3,7 @@ Ext.define('Rambox.view.main.MainController', {
 
 	,alias: 'controller.main'
 
-	,initialize: function( tabPanel ) {
+	,initialize( tabPanel ) {
 		const config = ipc.sendSync('getConfig');
 
 		tabPanel.setTabPosition(config.tabbar_location);
@@ -22,8 +22,8 @@ Ext.define('Rambox.view.main.MainController', {
 	}
 
 	// Make focus on webview every time the user change tabs, to enable the autofocus in websites
-	,onTabChange: function( tabPanel, newTab, oldTab ) {
-		var me = this;
+	,onTabChange( tabPanel, newTab, oldTab ) {
+		const me = this;
 
 		localStorage.setItem('last_active_service', newTab.id);
 
@@ -40,7 +40,7 @@ Ext.define('Rambox.view.main.MainController', {
 			return;
 		}
 
-		var webview = newTab.getWebView();
+		const webview = newTab.getWebView();
 		if ( webview ) webview.focus();
 
 		// Update the main window so it includes the active tab title.
@@ -51,17 +51,17 @@ Ext.define('Rambox.view.main.MainController', {
 		}
 	}
 
-	,updatePositions: function(tabPanel, tab) {
+	,updatePositions(tabPanel, tab) {
 		if ( tab.id === 'ramboxTab' || tab.id === 'tbfill' ) return true;
 
 		console.log('Updating Tabs positions...');
 
-		var store = Ext.getStore('Services');
-		var align = 'left';
+		const store = Ext.getStore('Services');
+		let align = 'left';
 		store.suspendEvent('childmove');
 		Ext.each(tabPanel.items.items, function(t, i) {
 			if ( t.id !== 'ramboxTab' && t.id !== 'tbfill' && t.record.get('enabled') ) {
-				var rec = store.getById(t.record.get('id'));
+				const rec = store.getById(t.record.get('id'));
 				if ( align === 'right' ) i--;
 				rec.set('align', align);
 				rec.set('position', i);
@@ -77,14 +77,14 @@ Ext.define('Rambox.view.main.MainController', {
 		store.resumeEvent('childmove');
 	}
 
-	,showServiceTab: function( grid, record, tr, rowIndex, e ) {
+	,showServiceTab( grid, record, tr, rowIndex, e ) {
 		if ( e.position.colIdx === 0 ) { // Service Logo
 			Ext.getCmp('tab_'+record.get('id')).show();
 		}
 	}
 
-	,onRenameService: function(editor, e) {
-		var me = this;
+	,onRenameService(editor, e) {
+		const me = this;
 
 		e.record.commit();
 
@@ -92,8 +92,8 @@ Ext.define('Rambox.view.main.MainController', {
 		Ext.getCmp('tab_'+e.record.get('id')).setTitle(e.record.get('name'));
 	}
 
-	,onEnableDisableService: function(cc, rowIndex, checked, obj, hideTab) {
-		var rec = Ext.getStore('Services').getAt(rowIndex);
+	,onEnableDisableService(cc, rowIndex, checked, obj, hideTab) {
+		const rec = Ext.getStore('Services').getAt(rowIndex);
 
 		if ( !checked ) {
 			Ext.getCmp('tab_'+rec.get('id')).destroy();
@@ -121,14 +121,14 @@ Ext.define('Rambox.view.main.MainController', {
 		}
 	}
 
-	,onNewServiceSelect: function( view, record, item, index, e ) {
+	,onNewServiceSelect( view, record, item, index, e ) {
 		Ext.create('Rambox.view.add.Add', {
 			record: record
 		});
 	}
 
-	,removeServiceFn: function(serviceId, total, actual, resolve) {
-		var me = this;
+	,removeServiceFn(serviceId, total, actual, resolve) {
+		const me = this;
 		if ( !serviceId ) return false;
 
 		// Get Record
@@ -173,8 +173,8 @@ Ext.define('Rambox.view.main.MainController', {
 		}
 	}
 
-	,removeService: function( gridView, rowIndex, colIndex, col, e, rec, rowEl ) {
-		var me = this;
+	,removeService( gridView, rowIndex, colIndex, col, e, rec, rowEl ) {
+		const me = this;
 
 		Ext.Msg.confirm(locale['app.window[12]'], locale['app.window[13]']+' <b>'+rec.get('name')+'</b>?', function(btnId) {
 			if ( btnId === 'yes' ) {
@@ -184,8 +184,8 @@ Ext.define('Rambox.view.main.MainController', {
 		});
 	}
 
-	,removeAllServices: function(btn, callback) {
-		var me = this;
+	,removeAllServices(btn, callback) {
+		const me = this;
 
 		// Clear counter for unread messaging
 		document.title = 'Rambox-OS';
@@ -215,14 +215,15 @@ Ext.define('Rambox.view.main.MainController', {
 					}));
 				});
 				Promise.all(promises)
-				.then(function(value) {
+				.then(function(resolve) {
 					if ( Ext.isFunction(callback) ) callback();
+					return resolve;
 				})
 				.catch(function(err) {
 					console.error('Error removing services: ' + err);
 					Ext.Msg.alert('Error!','Error removing services: ' + err);
 				})
-				.then(function() { // Replace when Promise.finally when available.
+				.finally(function() {
 					store.resumeEvent('childmove');
 					store.resumeEvent('remove');
 					document.title = 'Rambox-OS';
@@ -231,7 +232,7 @@ Ext.define('Rambox.view.main.MainController', {
 		}
 	}
 
-	,configureService: function( gridView, rowIndex, colIndex, col, e, rec, rowEl ) {
+	,configureService( gridView, rowIndex, colIndex, col, e, rec, rowEl ) {
 		Ext.create('Rambox.view.add.Add', {
 			 record: rec
 			,service: Ext.getStore('ServicesList').getById(rec.get('type'))
@@ -239,12 +240,12 @@ Ext.define('Rambox.view.main.MainController', {
 		});
 	}
 
-	,onSearchRender: function( field ) {
+	,onSearchRender( field ) {
 		field.focus(false, 1000);
 	}
 
-	,onSearchEnter: function( field, e ) {
-		var me = this;
+	,onSearchEnter( field, e ) {
+		const me = this;
 
 		if ( e.getKey() === e.ENTER && Ext.getStore('ServicesList').getCount() === 2 ) { // Two because we always shows Custom Service option
 			me.onNewServiceSelect(field.up().down('dataview'), Ext.getStore('ServicesList').getAt(0));
@@ -252,25 +253,25 @@ Ext.define('Rambox.view.main.MainController', {
 		}
 	}
 
-	,doTypeFilter: function( cg, newValue, oldValue ) {
-		var me = this;
+	,doTypeFilter( cg, newValue, oldValue ) {
+		const me = this;
 
 		Ext.getStore('ServicesList').getFilters().replaceAll({
-			fn: function(record) {
+			fn(record) {
 				return Ext.Array.contains(Ext.Object.getKeys(cg.getValue()), record.get('type')) || record.get('type') === 'custom';
 			}
 		});
 	}
 
-	,onSearchServiceChange: function(field, newValue, oldValue) {
-		var me = this;
+	,onSearchServiceChange(field, newValue, oldValue) {
+		const me = this;
 
-		var cg = field.up().down('checkboxgroup');
+		const cg = field.up().down('checkboxgroup');
 		if ( !Ext.isEmpty(newValue) && newValue.length > 0 ) {
 			field.getTrigger('clear').show();
 
 			Ext.getStore('ServicesList').getFilters().replaceAll({
-				fn: function(record) {
+				fn(record) {
 					if ( record.get('type') === 'custom' ) return true;
 					if ( !Ext.Array.contains(Ext.Object.getKeys(cg.getValue()), record.get('type')) ) return false;
 					return record.get('name').toLowerCase().indexOf(newValue.toLowerCase()) > -1 ? true : false;
@@ -284,10 +285,10 @@ Ext.define('Rambox.view.main.MainController', {
 		field.updateLayout();
 	}
 
-	,onClearClick: function(field, trigger, e) {
-		var me = this;
+	,onClearClick(field, trigger, e) {
+		const me = this;
 
-		var cg = field.up().down('checkboxgroup');
+		const cg = field.up().down('checkboxgroup');
 
 		field.reset();
 		field.getTrigger('clear').hide();
@@ -297,12 +298,12 @@ Ext.define('Rambox.view.main.MainController', {
 		me.doTypeFilter(cg);
 	}
 
-	,dontDisturb: function(btn, e, called) {
+	,dontDisturb(btn, e, called) {
 		console.info('Dont Disturb:', btn.pressed ? 'Enabled' : 'Disabled');
 
 		Ext.Array.each(Ext.getStore('Services').collect('id'), function(serviceId) {
 			// Get Tab
-			var tab = Ext.getCmp('tab_'+serviceId);
+			const tab = Ext.getCmp('tab_'+serviceId);
 
 			if ( !tab ) return; // Skip disabled services
 
@@ -330,8 +331,8 @@ Ext.define('Rambox.view.main.MainController', {
 		});
 	}
 
-	,lockRambox: function(btn) {
-		var me = this;
+	,lockRambox(btn) {
+		const me = this;
 
 		if ( ipc.sendSync('getConfig').master_password ) {
 			Ext.Msg.confirm(locale['app.main[19]'], 'Do you want to use the Master Password as your temporal password?', function(btnId) {
@@ -346,9 +347,9 @@ Ext.define('Rambox.view.main.MainController', {
 		}
 
 		function showTempPass() {
-			var msgbox = Ext.Msg.prompt(locale['app.main[19]'], locale['app.window[22]'], function(btnId, text) {
+			const msgbox = Ext.Msg.prompt(locale['app.main[19]'], locale['app.window[22]'], function(btnId, text) {
 				if ( btnId === 'ok' ) {
-					var msgbox2 = Ext.Msg.prompt(locale['app.main[19]'], locale['app.window[23]'], function(btnId, text2) {
+					const msgbox2 = Ext.Msg.prompt(locale['app.main[19]'], locale['app.window[23]'], function(btnId, text2) {
 						if ( btnId === 'ok' ) {
 							if ( text !== text2 ) {
 								Ext.Msg.show({
@@ -383,10 +384,10 @@ Ext.define('Rambox.view.main.MainController', {
 		}
 	}
 
-	,showLockWindow: function() {
-		var me = this;
+	,showLockWindow() {
+		const me = this;
 
-		var validateFn = function() {
+		const validateFn = function() {
 			if ( localStorage.getItem('locked') === Rambox.util.MD5.encypt(winLock.down('textfield').getValue()) ) {
 				console.info('Lock Rambox:', 'Disabled');
 				localStorage.removeItem('locked');
@@ -399,7 +400,7 @@ Ext.define('Rambox.view.main.MainController', {
 			}
 		};
 
-		var winLock = Ext.create('Ext.window.Window', {
+		const winLock = Ext.create('Ext.window.Window', {
 			 maximized: true
 			,closable: false
 			,resizable: false
@@ -433,7 +434,7 @@ Ext.define('Rambox.view.main.MainController', {
 							,inputType: 'password'
 							,width: 256
 							,listeners: {
-								specialkey: function(field, e){
+								specialkey(field, e){
 									if ( e.getKey() === e.ENTER ) {
 										validateFn();
 									}
@@ -443,7 +444,7 @@ Ext.define('Rambox.view.main.MainController', {
 						,{
 							 xtype: 'button'
 							,text: locale['app.window[27]']
-							,glyph: 'xf13e@FontAwesome'
+							,glyph: 'XF13E@FontAwesome'
 							,width: 256
 							,scale: 'large'
 							,handler: validateFn
@@ -452,7 +453,7 @@ Ext.define('Rambox.view.main.MainController', {
 				}
 			]
 			,listeners: {
-				render: function(win) {
+				render(win) {
 					win.getEl().on('click', function() {
 						win.down('textfield').focus(100);
 					});
@@ -462,8 +463,8 @@ Ext.define('Rambox.view.main.MainController', {
 		winLock.down('textfield').focus(1000);
 	}
 
-	,openPreferences: function( btn ) {
-		var me = this;
+	,openPreferences( btn ) {
+		const me = this;
 
 		Ext.create('Rambox.view.preferences.Preferences').show();
 	}

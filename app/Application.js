@@ -20,7 +20,7 @@ Ext.define('Rambox.Application', {
 		,totalNotifications: 0
 	}
 
-	,launch: function () {
+	,launch() {
 		// Load language for Ext JS library
 		Ext.Loader.loadScript({url: Ext.util.Format.format("ext/packages/ext-locale/build/ext-locale-{0}.js", localStorage.getItem('locale') || 'en')});
 
@@ -34,9 +34,9 @@ Ext.define('Rambox.Application', {
 		// Mouse Wheel zooming
 		document.addEventListener('mousewheel', function(e) {
 			if( e.ctrlKey ) {
-				var delta = Math.max(-1, Math.min(1, e.wheelDelta || -e.detail));
+				const  delta = Math.max(-1, Math.min(1, e.wheelDelta || -e.detail));
 
-				var tabPanel = Ext.cq1('app-main');
+				const tabPanel = Ext.cq1('app-main');
 				if ( tabPanel.items.indexOf(tabPanel.getActiveTab()) === 0 ) return false;
 
 				if ( delta === 1 ) { // Zoom In
@@ -60,7 +60,7 @@ Ext.define('Rambox.Application', {
 		Ext.get('spinner').destroy();
 	}
 
-	,updateTotalNotifications: function( newValue, oldValue ) {
+	,updateTotalNotifications( newValue, oldValue ) {
 		newValue = parseInt(newValue);
 		if ( newValue > 0 )	{
 			if ( Ext.cq1('app-main').getActiveTab().record ) {
@@ -77,14 +77,14 @@ Ext.define('Rambox.Application', {
 		}
 	}
 
-	,checkUpdate: function(silence) {
+	,checkUpdate(silence) {
 		console.info('Checking for updates...');
 		Ext.Ajax.request({
 			 url: 'https://api.github.com/repos/TheGoddessInari/rambox/releases/latest'
 			,method: 'GET'
-			,success: function(response) {
-				var json = JSON.parse(response.responseText);
-				var appVersion = new Ext.Version(require('electron').remote.app.getVersion());
+			,success(response) {
+				const json = JSON.parse(response.responseText);
+				const appVersion = new Ext.Version(require('electron').remote.app.getVersion());
 				if ( appVersion.isLessThan(json.version) ) {
 					console.info('New version is available', json.version);
 					Ext.cq1('app-main').addDocked({
@@ -111,10 +111,10 @@ Ext.define('Rambox.Application', {
 							}
 							,'->'
 							,{
-								 glyph: 'xf00d@FontAwesome'
+								 glyph: 'XF00D@FontAwesome'
 								,baseCls: ''
 								,style: 'cursor:pointer;'
-								,handler: function(btn) { Ext.cq1('app-main').removeDocked(btn.up('toolbar'), true); }
+								,handler(btn) { Ext.cq1('app-main').removeDocked(btn.up('toolbar'), true); }
 							}
 						]
 					});

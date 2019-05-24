@@ -25,8 +25,8 @@ Ext.define('Rambox.view.add.Add',{
 	,draggable: false
 	,bodyPadding: 20
 
-	,initComponent: function() {
-		var me = this;
+	,initComponent() {
+		const me = this;
 
 		me.title = (!me.edit ? locale['app.window[0]'] : locale['app.window[1]']) + ' ' + me.record.get('name');
 		me.icon = me.record.get('type') === 'custom' ? (!me.edit ? 'resources/icons/custom.png' : (me.record.get('logo') === '' ? 'resources/icons/custom.png' : me.record.get('logo'))) : 'resources/icons/'+me.record.get('logo');
@@ -93,10 +93,10 @@ Ext.define('Rambox.view.add.Add',{
 									]
 								}
 								// Fixes bug EXTJS-20094 for version Ext JS 5
-								,arrowHandler: function(cycleBtn, e) {
+								,arrowHandler(cycleBtn, e) {
 									if ( !cycleBtn.arrowVisible ) cycleBtn.hideMenu();
 								}
-								,changeHandler: function(cycleBtn, activeItem) {
+								,changeHandler(cycleBtn, activeItem) {
 									Ext.apply(cycleBtn.previousSibling(), {
 										 emptyText: activeItem.custom ? 'https://' : ' '
 										,vtype: activeItem.custom ? 'url' : ''

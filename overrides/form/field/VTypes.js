@@ -1,17 +1,17 @@
 Ext.apply(Ext.form.field.VTypes, {
-	daterange: function(val, field) {
-		var date = field.parseDate(val);
+	daterange(val, field) {
+		const date = field.parseDate(val);
 
 		if (!date) {
 			return false;
 		}
-		if (field.startDateField && (!this.dateRangeMax || (date.getTime() != this.dateRangeMax.getTime()))) {
-			var start = field.up('form').down('#' + field.startDateField);
+		if (field.startDateField && (!this.dateRangeMax || (date.getTime() !== this.dateRangeMax.getTime()))) {
+			const start = field.up('form').down('#' + field.startDateField);
 			start.setMaxValue(date);
 			start.validate();
 			this.dateRangeMax = date;
-		} else if (field.endDateField && (!this.dateRangeMin || (date.getTime() != this.dateRangeMin.getTime()))) {
-			var end = field.up('form').down('#' + field.endDateField);
+		} else if (field.endDateField && (!this.dateRangeMin || (date.getTime() !== this.dateRangeMin.getTime()))) {
+			const end = field.up('form').down('#' + field.endDateField);
 			end.setMinValue(date);
 			end.validate();
 			this.dateRangeMin = date;
@@ -25,10 +25,10 @@ Ext.apply(Ext.form.field.VTypes, {
 
 	daterangeText: 'Start date must be less than end date',
 
-	password: function(val, field) {
+	password(val, field) {
 		if (field.initialPassField) {
-			var pwd = field.up('form').down('#' + field.initialPassField);
-			return (val == pwd.getValue());
+			const pwd = field.up('form').down('#' + field.initialPassField);
+			return (val === pwd.getValue());
 		}
 		return true;
 	},

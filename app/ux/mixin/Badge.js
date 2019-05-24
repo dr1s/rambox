@@ -20,16 +20,16 @@ Ext.define('Rambox.ux.mixin.Badge', {
 		badgeText: null
 	},
 
-	renderBadgeText: function() {
-		var badgeText = this.getBadgeText();
+	renderBadgeText() {
+		const badgeText = this.getBadgeText();
 
 		if (badgeText) {
 			this.updateBadgeText(badgeText);
 		}
 	},
 
-	updateBadgeText: function(badgeText, oldBadgeText) {
-		var me = this,
+	updateBadgeText(badgeText, oldBadgeText) {
+		const me = this,
 			el = me.el;
 
 		if (me.rendered) {
